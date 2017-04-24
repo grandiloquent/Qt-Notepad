@@ -147,6 +147,7 @@
     </property>
     <addaction name="actionSort"/>
     <addaction name="actionEscape"/>
+    <addaction name="actionFormatConstName"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_3"/>
@@ -218,6 +219,11 @@
   <action name="actionClearProcesses">
    <property name="text">
     <string>清理冗余进程</string>
+   </property>
+  </action>
+  <action name="actionFormatConstName">
+   <property name="text">
+    <string>转换成常量名</string>
    </property>
   </action>
  </widget>

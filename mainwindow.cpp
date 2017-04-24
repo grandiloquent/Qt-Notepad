@@ -140,3 +140,18 @@ void MainWindow::on_actionClearProcesses_triggered()
 {
     ClearRedundancyProcesses();
 }
+
+void MainWindow::on_actionFormatConstName_triggered()
+{
+    QClipboard *c=QApplication::clipboard();
+    QString s =c->text();
+    QString t=s;
+    int cx=0;
+    for(uint i=0; i<s.size(); i++) {
+        if(i!=0&&s[i].isUpper()) {
+            t.insert(i+cx,'_');
+            cx++;
+        }
+    }
+    c->setText(t.toUpper());
+}
