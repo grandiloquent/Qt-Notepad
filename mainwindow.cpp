@@ -4,6 +4,8 @@
 #include <QClipboard>
 #include <QDebug>
 #include "utils.h"
+#include "database.h"
+#include <QDir>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -13,10 +15,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->plainTextEdit->addAction(ui->actionCopy);
 
+    this->refreshDatabaseNames();
+    // Database::instance();
 
 
 }
-
+void MainWindow::refreshDatabaseNames(){
+    ui->comboBox->clear();
+    QString dirStr= GetApplicationPath("datas");
+    QDir dir(dirStr);
+    QStringList allFiles = dir.entryList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst);//(QDir::Filter::Files,QDir::SortFlag::NoSort)
+    ui->comboBox->addItems(allFiles);
+}
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -56,13 +66,20 @@ void MainWindow::on_actionSort_triggered()
 
 void MainWindow::on_actionEscape_triggered()
 {
-    QString s =QApplication::clipboard()->text();
-    SortMethods(s);
-//    QClipboard *c=QApplication::clipboard();
-//    wchar_t buf[c->text().size()*2+1];
-//    c->text().toWCharArray(buf);
-//    QString s=EncodeUnicodeEscapes(buf);
 
-//    c->setText(s);
+    QClipboard *c=QApplication::clipboard();
+    wchar_t buf[c->text().size()*2+1];
+    c->text().toWCharArray(buf);
+    QString s=EncodeUnicodeEscapes(buf);
 
+    c->setText(s);
+
+}
+
+void MainWindow::on_actionFormatCode_triggered()
+{
+    QClipboard *c=QApplication::clipboard();
+    QString s =c->text();
+    s= SortMethods(s);
+    c->setText(s);
 }

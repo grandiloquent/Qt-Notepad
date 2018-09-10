@@ -2,7 +2,10 @@
 #define DATABASE_H
 #include <QtSql/QSqlDatabase>
 #include <QObject>
-
+#include <QDir>
+#include <QCoreApplication>
+#include "utils.h"
+#include <QSqlQuery>
 
 class Database : public QObject {
 Q_OBJECT
@@ -17,9 +20,11 @@ Database();
 QSqlDatabase m_db;
 bool createStructure();
 bool open();
-bool close();
+void close();
+bool transaction();
 bool executeCommands(QStringList &commands);
-
+void rollback();
+bool commit();
 };
 
 #endif // DATABASE_H

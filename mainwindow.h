@@ -26,8 +26,11 @@ void on_actionSort_triggered();
 
 void on_actionEscape_triggered();
 
+void on_actionFormatCode_triggered();
+
 private:
 Ui::MainWindow *ui;
+void refreshDatabaseNames();
 };
 
 #endif // MAINWINDOW_H

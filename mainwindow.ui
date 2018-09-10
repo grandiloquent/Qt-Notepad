@@ -149,6 +149,8 @@
    <addaction name="separator"/>
    <addaction name="actionFormatPath"/>
    <addaction name="actionSort"/>
+   <addaction name="actionFormatCode"/>
+   <addaction name="separator"/>
    <addaction name="actionEscape"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -178,6 +180,11 @@
   <action name="actionEscape">
    <property name="text">
     <string>逃逸</string>
+   </property>
+  </action>
+  <action name="actionFormatCode">
+   <property name="text">
+    <string>格式化代码</string>
    </property>
   </action>
  </widget>

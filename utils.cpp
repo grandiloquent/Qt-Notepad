@@ -1,6 +1,53 @@
 #include "utils.h"
 #include <QDebug>
+#include <QDir>
+#include <QCoreApplication>
 
+bool compareString(const QString&v1,const QString &v2){
+    return v1<v2;
+}
+QString EncodeUnicodeEscapes(const wchar_t *input){
+    std::wstring output;
+    QString result;
+
+    QTextCodec::setCodecForLocale ( QTextCodec::codecForName ( "UTF-8" ) );
+
+    for( uint i = 0; wcslen( input ) > i; ++i )
+    {
+        if( isascii( input[ i ] )&&input[i]!=L'"' )
+        {
+            output.reserve( output.size() + 1 );
+            output += input[ i ];
+        } else {
+            wchar_t code[ 7 ];
+            swprintf( code, 7, L"\\u%0.4X", input[ i ] );
+            output.reserve( output.size() + 7 ); // "\u"(2) + 5(uint max digits capacity)
+            output += code;
+        }
+    }
+
+    result.reserve( output.size() );
+    result.append( QString::fromStdWString( output ) );
+    return result;
+}
+WINBOOL SetSystemTime(int hour,int minute){
+    SYSTEMTIME t;
+    GetLocalTime(&t);
+    t.wHour=hour;
+    t.wMinute=minute;
+    return SetLocalTime(&t);
+}
+QString SortLines(QString &s){
+    QStringList list;
+    list=s.split('\n',QString::SplitBehavior::SkipEmptyParts);
+    for(int i=0; i<list.size(); i++) {
+        list[i]=list[i].trimmed();
+    }
+    std::sort(list.begin(),list.end(),compareString);
+
+    return list.join("\n");
+
+}
 QString SortMethods(QString &s){
     QChar c1=QChar('{');
     QChar c2=QChar('}');
@@ -14,7 +61,7 @@ QString SortMethods(QString &s){
         }else if(s[i]==c2) {
             c--;
             if(c==0) {
-                ls.append(n);
+                ls.append(n.trimmed());
 
                 n.clear();
             }
@@ -46,56 +93,15 @@ QString SortMethods(QString &s){
         if(p2>-1) {
                 vs2=vs2.right(vs2.size()-p2-1);
         }
-        qDebug()<<vs1<< "  "<<vs2;
+
 
         return vs1.compare(vs2,Qt::CaseInsensitive)<0;
     });
     return ls.join('\n');
 }
-
-QString EncodeUnicodeEscapes(const wchar_t *input){
-    std::wstring output;
-    QString result;
-
-    QTextCodec::setCodecForLocale ( QTextCodec::codecForName ( "UTF-8" ) );
-
-    for( uint i = 0; wcslen( input ) > i; ++i )
-    {
-        if( isascii( input[ i ] )&&input[i]!=L'"' )
-        {
-            output.reserve( output.size() + 1 );
-            output += input[ i ];
-        } else {
-            wchar_t code[ 7 ];
-            swprintf( code, 7, L"\\u%0.4X", input[ i ] );
-            output.reserve( output.size() + 7 ); // "\u"(2) + 5(uint max digits capacity)
-            output += code;
-        }
-    }
-
-    result.reserve( output.size() );
-    result.append( QString::fromStdWString( output ) );
-    return result;
+QString CombinePath(const QString &dir,const QString &fileName){
+    return QDir::cleanPath(dir+QDir::separator()+fileName);
 }
-
-WINBOOL SetSystemTime(int hour,int minute){
-    SYSTEMTIME t;
-    GetLocalTime(&t);
-    t.wHour=hour;
-    t.wMinute=minute;
-    return SetLocalTime(&t);
-}
-bool compareString(const QString&v1,const QString &v2){
-    return v1<v2;
-}
-QString SortLines(QString &s){
-    QStringList list;
-    list=s.split('\n',QString::SplitBehavior::SkipEmptyParts);
-    for(int i=0; i<list.size(); i++) {
-        list[i]=list[i].trimmed();
-    }
-    std::sort(list.begin(),list.end(),compareString);
-
-    return list.join("\n");
-
+QString GetApplicationPath(const QString &fileName){
+    return CombinePath(QCoreApplication::applicationDirPath(),fileName);
 }
