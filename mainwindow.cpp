@@ -146,8 +146,8 @@ void MainWindow::on_actionClearProcesses_triggered()
 
 
     ClearRedundancyProcesses();
-    int r= SetSystemCurrentTime(1,38);
-    qDebug()<<r;
+
+
 }
 
 void MainWindow::on_actionFormatConstName_triggered()
