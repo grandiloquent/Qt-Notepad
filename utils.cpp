@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <QDir>
 #include <QCoreApplication>
+#include <QTextCursor>
+
 
 bool compareString(const QString&v1,const QString &v2){
     return v1<v2;
@@ -105,3 +107,4 @@ QString CombinePath(const QString &dir,const QString &fileName){
 QString GetApplicationPath(const QString &fileName){
     return CombinePath(QCoreApplication::applicationDirPath(),fileName);
 }
+

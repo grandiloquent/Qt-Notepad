@@ -1,6 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "database.h"
+#include "utils.h"
+#include <QClipboard>
+#include <QDebug>
+#include <QDir>
+#include <QFileDialog>
 #include <QMainWindow>
 
 namespace Ui {
@@ -28,7 +34,14 @@ void on_actionEscape_triggered();
 
 void on_actionFormatCode_triggered();
 
+void on_comboBox_currentIndexChanged(const QString &arg1);
+
+void on_actionFormatTitle_triggered();
+
+void on_plainTextEdit_textChanged();
+
 private:
+bool isChanged;
 Ui::MainWindow *ui;
 void refreshDatabaseNames();
 };

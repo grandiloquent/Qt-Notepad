@@ -111,6 +111,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::ActionsContextMenu</enum>
+       </property>
       </widget>
      </widget>
     </item>
@@ -130,14 +133,23 @@
      <string>文件</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
      <string>其他</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>字符串</string>
+    </property>
+    <addaction name="actionSort"/>
+    <addaction name="actionEscape"/>
+   </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -148,10 +160,9 @@
    </attribute>
    <addaction name="separator"/>
    <addaction name="actionFormatPath"/>
-   <addaction name="actionSort"/>
    <addaction name="actionFormatCode"/>
    <addaction name="separator"/>
-   <addaction name="actionEscape"/>
+   <addaction name="actionFormatTitle"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen">
@@ -185,6 +196,22 @@
   <action name="actionFormatCode">
    <property name="text">
     <string>格式化代码</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>保存 (F1)</string>
+   </property>
+   <property name="toolTip">
+    <string>保存</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="actionFormatTitle">
+   <property name="text">
+    <string>标题</string>
    </property>
   </action>
  </widget>
