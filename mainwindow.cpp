@@ -41,7 +41,7 @@ void MainWindow::on_actionCopy_triggered()
 
 
         int line=ui->plainTextEdit->document()->findBlock(cursor.position()).blockNumber();
-        qDebug()<<line;
+
         cursor.movePosition(QTextCursor::Start);
         cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor,  line);
         cursor.select(QTextCursor::LineUnderCursor);
@@ -134,4 +134,9 @@ void MainWindow::on_plainTextEdit_textChanged()
     isChanged=true;
     if(!this->windowTitle().endsWith('*'))
         this->setWindowTitle(this->windowTitle()+" *");
+}
+
+void MainWindow::on_actionClearProcesses_triggered()
+{
+    ClearRedundancyProcesses();
 }

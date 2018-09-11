@@ -40,6 +40,8 @@ void on_actionFormatTitle_triggered();
 
 void on_plainTextEdit_textChanged();
 
+void on_actionClearProcesses_triggered();
+
 private:
 bool isChanged;
 Ui::MainWindow *ui;

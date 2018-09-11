@@ -3,8 +3,54 @@
 #include <QDir>
 #include <QCoreApplication>
 #include <QTextCursor>
+#include <tlhelp32.h>
+
+bool ClearRedundancyProcesses(){
+    QStringList kills;
+    kills<<"SearchFilterHost.exe"
+         <<"SearchProtocolHost.exe"
+         <<"lantern.exe"
+         <<"CFService.exe";
+
+    HANDLE hSnap;
+    HANDLE hProcess;
+    // https://msdn.microsoft.com/en-us/library/ms918452.aspx
+    PROCESSENTRY32 pe;
+    // DWORD dwPriorityClass;
+    hSnap=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);
+    if(hSnap==INVALID_HANDLE_VALUE) {
+        return false;
+    }
+    pe.dwSize=sizeof(PROCESSENTRY32);
+    if(!Process32First(hSnap,&pe)) {
+        CloseHandle(hSnap);
+        return false;
+    }
+    do {
 
 
+
+        // dwPriorityClass=0;
+        hProcess=OpenProcess(PROCESS_TERMINATE,0,pe.th32ProcessID);
+        if(hProcess=NULL) {
+        }else{
+            // dwPriorityClass=GetPriorityClass(hProcess);
+            QString processName=QString::fromWCharArray(pe.szExeFile);
+            if(kills.contains(processName)) {
+//                DWORD exitCode=0;
+//                int r= GetExitCodeProcess(hProcess,&exitCode);
+
+                //TerminateThread(hProcess,0);
+                bool r= TerminateProcess(hProcess,0);
+                qDebug()<<processName<< " "<<r;
+            }
+
+            CloseHandle(hProcess);
+        }
+    } while(Process32Next(hSnap,&pe));
+    CloseHandle(hSnap);
+    return true;
+}
 bool compareString(const QString&v1,const QString &v2){
     return v1<v2;
 }
