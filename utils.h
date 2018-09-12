@@ -1,6 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
-#include <windows.h>
+#include <win.h>
 #include <QList>
 #include <QString>
 #include <QTextCodec>

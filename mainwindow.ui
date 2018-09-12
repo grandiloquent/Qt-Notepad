@@ -141,6 +141,9 @@
     </property>
     <addaction name="actionClearProcesses"/>
     <addaction name="actionProofreadingBeiJingTime"/>
+    <addaction name="separator"/>
+    <addaction name="actionOpenApplicationPath"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -230,6 +233,14 @@
   <action name="actionProofreadingBeiJingTime">
    <property name="text">
     <string>将对北京时间</string>
+   </property>
+   <property name="toolTip">
+    <string>校对北京时间</string>
+   </property>
+  </action>
+  <action name="actionOpenApplicationPath">
+   <property name="text">
+    <string>打开当前目录</string>
    </property>
   </action>
  </widget>

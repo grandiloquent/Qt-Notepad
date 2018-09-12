@@ -1,10 +1,16 @@
 #include "database.h"
+#include <QSqlQuery>
+#include <QDateTime>
 
 
-Database * Database::m_instance=nullptr;
+
+
 
 void Database::close(){
     m_db.close();
+}
+bool Database::commit(){
+    return m_db.commit();
 }
 bool Database::createStructure(){
     QStringList ls;
@@ -25,7 +31,7 @@ bool Database::createStructure(){
     this->close();
     return c;
 }
-Database::Database(){
+Database::Database(QString fileName){
     m_db=QSqlDatabase::addDatabase("QSQLITE");
     m_db.setHostName("localhost");
     QString f("datas");
@@ -34,8 +40,8 @@ Database::Database(){
     if(!QDir(dir).exists()) {
         QDir().mkdir(dir);
     }
-    QString fn("db.dat");
-    m_db.setDatabaseName(CombinePath(dir,fn));
+
+    m_db.setDatabaseName(CombinePath(dir,fileName));
     createStructure();
 }
 bool Database::executeCommands(QStringList &commands){
@@ -44,14 +50,27 @@ bool Database::executeCommands(QStringList &commands){
     }
     return true;
 }
-Database* Database::instance(){
-    if(!m_instance) {
-        m_instance=new  Database();
-
-
+qlonglong Database::insert(QString &title,QString &content){
+    if(!this->open()) return -1;
+    if(!this->transaction()) {
+        this->close();
+        return -1;
     }
-    return m_instance;
+    QSqlQuery q;
+    q.prepare("INSERT INTO Article (Title, Content, CreateAt,UpdateAt) "
+              "VALUES (:title, :content, :createAt, :updateAt)");
+    q.bindValue(":title",title);
+    q.bindValue(":content",content);
+    q.bindValue(":createAt",QDateTime::currentSecsSinceEpoch());
+    q.bindValue(":updateAt",QDateTime::currentSecsSinceEpoch());
+    q.exec();
+    bool c=this->commit();
+    qlonglong r=c ? q.lastInsertId().toLongLong() : -1;
+    this->close();
+    return r;
+
 }
+
 bool Database::open(){
     return m_db.open();
 }
@@ -62,6 +81,6 @@ void Database::rollback(){
 bool Database::transaction(){
     return m_db.transaction();
 }
-bool Database::commit(){
-    return m_db.commit();
+Database::~Database(){
+
 }

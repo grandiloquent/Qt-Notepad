@@ -1,11 +1,5 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include <QTextBlock>
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QNetworkRequest>
-#include <QUrl>
-#include <QDateTime>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,8 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->plainTextEdit->addAction(ui->actionCopy);
 
-    this->refreshDatabaseNames();
+
     // Database::instance();
+
+    this->initialize();
 
 
 }
@@ -77,7 +73,17 @@ void MainWindow::on_actionSort_triggered()
     str= SortLines(str);
     c->setText(str);
 }
+void MainWindow::initialize(){
+    if(ui->comboBox->itemText(0).isNull()) {
+        currentDatabase=new Database("db.dat");
+    }else{
+        currentDatabase=new Database(ui->comboBox->itemText(0));
+    }
+    this->refreshDatabaseNames();
 
+    QFont f("Consolas",12);
+    this->ui->plainTextEdit->setFont(f);
+}
 void MainWindow::on_actionEscape_triggered()
 {
 
@@ -168,22 +174,24 @@ void MainWindow::on_actionFormatConstName_triggered()
 
 void MainWindow::on_actionProofreadingBeiJingTime_triggered()
 {
-    QNetworkAccessManager* manager=new QNetworkAccessManager();
-    QObject::connect(manager,&QNetworkAccessManager::finished,this,[=](QNetworkReply *reply){
-        if(reply->error()) {
-                qDebug()<<reply->errorString();
-                return;
-        }
-        QString res=reply->readAll();
-        uint v=res.left(10).toLong();
+    ProofreadingBeijingTime();
+}
 
-        QDateTime time;
+void MainWindow::on_actionOpenApplicationPath_triggered()
+{
+    QProcess p;
+    QDesktopServices::openUrl(QUrl(QCoreApplication::applicationDirPath()));
 
-        time.setTime_t(v);
+}
 
-        SetSystemCurrentTime(time.date().year(),time.date().month(),time.date().day(),time.time().hour(),time.time().minute(),time.time().second());
-    });
-    QNetworkRequest request;
-    request.setUrl(QUrl("https://bjtime.cn/nt.asp"));
-    manager->get(request);
+void MainWindow::on_actionSave_triggered()
+{
+    QString str=ui->plainTextEdit->toPlainText();
+    int pos= str.trimmed().indexOf('\n');
+
+    QString title=pos>-1 ? str.trimmed().left(pos) : str;
+
+    qlonglong r= currentDatabase->insert(title,str);
+
+    qDebug()<<r<<" ";
 }

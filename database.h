@@ -6,17 +6,16 @@
 #include <QCoreApplication>
 #include "utils.h"
 #include <QSqlQuery>
+#include <QString>
 
 class Database : public QObject {
 Q_OBJECT
 public:
-static Database *instance();
+Database(QString fileName);
+~Database();
+qlonglong  insert(QString &title,QString &content);
 
 private:
-static Database *m_instance;
-Database();
-~Database(){
-};
 QSqlDatabase m_db;
 bool createStructure();
 bool open();

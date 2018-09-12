@@ -27,12 +27,16 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     utils.cpp \
-    database.cpp
+    database.cpp \
+    file.cpp \
+    win.cpp
 
 HEADERS += \
         mainwindow.h \
     database.h \
-    utils.h
+    utils.h \
+    file.h \
+    win.h
 
 FORMS += \
         mainwindow.ui

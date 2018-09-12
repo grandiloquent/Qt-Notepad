@@ -1,13 +1,20 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
 #include "database.h"
+#include "file.h"
+#include "ui_mainwindow.h"
 #include "utils.h"
+#include "win.h"
 #include <QClipboard>
+#include <QDateTime>
 #include <QDebug>
+#include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
 #include <QMainWindow>
+#include <QProcess>
+#include <QTextBlock>
+
 
 namespace Ui {
 class MainWindow;
@@ -46,10 +53,17 @@ void on_actionFormatConstName_triggered();
 
 void on_actionProofreadingBeiJingTime_triggered();
 
+void on_actionOpenApplicationPath_triggered();
+
+void on_actionSave_triggered();
+
 private:
 bool isChanged;
 Ui::MainWindow *ui;
+Database *currentDatabase;
+int lastId;
 void refreshDatabaseNames();
+void initialize();
 };
 
 #endif // MAINWINDOW_H

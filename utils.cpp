@@ -79,19 +79,7 @@ QString EncodeUnicodeEscapes(const wchar_t *input){
     result.append( QString::fromStdWString( output ) );
     return result;
 }
-WINBOOL SetSystemCurrentTime(int year,int month,int day,int hour,int minute,int second){
 
-
-    SYSTEMTIME t;
-    GetLocalTime(&t);
-    t.wYear=year;
-    t.wMonth=month;
-    t.wDay=day;
-    t.wHour=hour;
-    t.wMinute=minute;
-    t.wSecond=second;
-    return SetLocalTime(&t);
-}
 QString SortLines(QString &s){
     QStringList list;
     list=s.split('\n',QString::SplitBehavior::SkipEmptyParts);
@@ -108,6 +96,7 @@ QString SortMethods(QString &s){
     QChar c2=QChar('}');
     uint c=0;
     QStringList ls;
+    QStringList hls;
     QString n;
     for(uint i=0; i<s.size(); i++) {
         n.append(s[i]);
@@ -115,14 +104,17 @@ QString SortMethods(QString &s){
             c++;
         }else if(s[i]==c2) {
             c--;
+            qDebug()<<c;
             if(c==0) {
                 ls.append(n.trimmed());
-
+                hls.append(n.split(c1).first()+";");
                 n.clear();
             }
         }
-
     }
+    std::sort(hls.begin(),hls.end(),[](const QString &v1,const QString &v2) -> bool {
+        return v1.trimmed().compare(v2.trimmed());
+    });
     std::sort(ls.begin(),ls.end(),[](const QString &v1,const QString &v2) -> bool {
 
         QString vs1,vs2;
@@ -152,12 +144,6 @@ QString SortMethods(QString &s){
 
         return vs1.compare(vs2,Qt::CaseInsensitive)<0;
     });
-    return ls.join('\n');
-}
-QString CombinePath(const QString &dir,const QString &fileName){
-    return QDir::cleanPath(dir+QDir::separator()+fileName);
-}
-QString GetApplicationPath(const QString &fileName){
-    return CombinePath(QCoreApplication::applicationDirPath(),fileName);
+    return hls.join('\n')+"\n\n\n"+ls.join('\n');
 }
 
