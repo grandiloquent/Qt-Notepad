@@ -98,22 +98,28 @@ QString SortMethods(QString &s){
     QStringList ls;
     QStringList hls;
     QString n;
+    QRegExp re=    QRegExp("[a-zA-Z0-9_]+::");
+
     for(uint i=0; i<s.size(); i++) {
         n.append(s[i]);
         if(s[i]==c1) {
             c++;
         }else if(s[i]==c2) {
             c--;
-            qDebug()<<c;
+
             if(c==0) {
                 ls.append(n.trimmed());
-                hls.append(n.split(c1).first()+";");
-                n.clear();
+                if(!n.isEmpty()) {
+                    QString l=n.split(c1).first().trimmed()+";";
+                    l= l.replace(re,"");
+                    hls.append(l);
+                } n.clear();
             }
         }
     }
     std::sort(hls.begin(),hls.end(),[](const QString &v1,const QString &v2) -> bool {
-        return v1.trimmed().compare(v2.trimmed());
+
+        return v1.compare(v2)>0;
     });
     std::sort(ls.begin(),ls.end(),[](const QString &v1,const QString &v2) -> bool {
 

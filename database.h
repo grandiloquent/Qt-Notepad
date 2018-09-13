@@ -7,6 +7,8 @@
 #include "utils.h"
 #include <QSqlQuery>
 #include <QString>
+#include <QList>
+#include <QPair>
 
 class Database : public QObject {
 Q_OBJECT
@@ -14,6 +16,9 @@ public:
 Database(QString fileName);
 ~Database();
 qlonglong  insert(QString &title,QString &content);
+QList<QPair<qlonglong,QString> > ListNotes();
+QPair<QString,QString> Query(qlonglong id);
+bool DeleteNote(qlonglong id);
 
 private:
 QSqlDatabase m_db;

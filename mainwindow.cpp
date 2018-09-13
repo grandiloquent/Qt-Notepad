@@ -1,6 +1,19 @@
 #include "mainwindow.h"
 
 
+
+void MainWindow::initialize(){
+    if(ui->comboBox->itemText(0).isNull()) {
+        currentDatabase=new Database("db.dat");
+    }else{
+        currentDatabase=new Database(ui->comboBox->itemText(0));
+    }
+    this->refreshDatabaseNames();
+
+    QFont f("Consolas",12);
+    this->ui->plainTextEdit->setFont(f);
+    refreshList();
+}
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -8,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->plainTextEdit->addAction(ui->actionCopy);
-
+    ui->listWidget->addAction(ui->actionDelete);
 
     // Database::instance();
 
@@ -16,23 +29,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 }
-void MainWindow::refreshDatabaseNames(){
-    ui->comboBox->clear();
-    QString dirStr= GetApplicationPath("datas");
-    QDir dir(dirStr);
-    QStringList allFiles = dir.entryList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst);//(QDir::Filter::Files,QDir::SortFlag::NoSort)
-    ui->comboBox->addItems(allFiles);
-}
-MainWindow::~MainWindow()
+void MainWindow::on_actionClearProcesses_triggered()
 {
-    delete ui;
-}
 
-void MainWindow::on_actionOpen_triggered()
-{
-    QFileDialog::getOpenFileName(this,"Open File","",tr("Image Files (*.png *.jpg *.bmp)"));
-}
 
+    ClearRedundancyProcesses();
+
+
+}
 void MainWindow::on_actionCopy_triggered()
 {
     QTextCursor cursor=ui->plainTextEdit->textCursor();
@@ -52,38 +56,6 @@ void MainWindow::on_actionCopy_triggered()
 
     }
 }
-
-void MainWindow::on_actionFormatPath_triggered()
-{
-    QClipboard *c = QApplication::clipboard();
-    //QClipboard* c= QApplication::clipboard();
-    QString str= c->text();
-    if(str.trimmed().size()>0) {
-        c->setText(str.replace("\\","/"));
-    }
-
-}
-
-void MainWindow::on_actionSort_triggered()
-{
-    QClipboard *c = QApplication::clipboard();
-
-    QString str= c->text();
-
-    str= SortLines(str);
-    c->setText(str);
-}
-void MainWindow::initialize(){
-    if(ui->comboBox->itemText(0).isNull()) {
-        currentDatabase=new Database("db.dat");
-    }else{
-        currentDatabase=new Database(ui->comboBox->itemText(0));
-    }
-    this->refreshDatabaseNames();
-
-    QFont f("Consolas",12);
-    this->ui->plainTextEdit->setFont(f);
-}
 void MainWindow::on_actionEscape_triggered()
 {
 
@@ -95,7 +67,6 @@ void MainWindow::on_actionEscape_triggered()
     c->setText(s);
 
 }
-
 void MainWindow::on_actionFormatCode_triggered()
 {
     QClipboard *c=QApplication::clipboard();
@@ -103,12 +74,30 @@ void MainWindow::on_actionFormatCode_triggered()
     s= SortMethods(s);
     c->setText(s);
 }
-
-void MainWindow::on_comboBox_currentIndexChanged(const QString &arg)
+void MainWindow::on_actionFormatConstName_triggered()
 {
-    qDebug()<<arg;
+    QClipboard *c=QApplication::clipboard();
+    QString s =c->text();
+    QString t=s;
+    int cx=0;
+    for(uint i=0; i<s.size(); i++) {
+        if(i!=0&&s[i].isUpper()) {
+            t.insert(i+cx,'_');
+            cx++;
+        }
+    }
+    c->setText(t.toUpper());
 }
+void MainWindow::on_actionFormatPath_triggered()
+{
+    QClipboard *c = QApplication::clipboard();
+    //QClipboard* c= QApplication::clipboard();
+    QString str= c->text();
+    if(str.trimmed().size()>0) {
+        c->setText(str.replace("\\","/"));
+    }
 
+}
 void MainWindow::on_actionFormatTitle_triggered()
 {
     QTextCursor c=ui->plainTextEdit->textCursor();
@@ -139,51 +128,20 @@ void MainWindow::on_actionFormatTitle_triggered()
     //
     //ui->plainTextEdit->setTextCursor(c);
 }
-
-void MainWindow::on_plainTextEdit_textChanged()
+void MainWindow::on_actionOpen_triggered()
 {
-    isChanged=true;
-    if(!this->windowTitle().endsWith('*'))
-        this->setWindowTitle(this->windowTitle()+" *");
+    QFileDialog::getOpenFileName(this,"Open File","",tr("Image Files (*.png *.jpg *.bmp)"));
 }
-
-void MainWindow::on_actionClearProcesses_triggered()
-{
-
-
-    ClearRedundancyProcesses();
-
-
-}
-
-void MainWindow::on_actionFormatConstName_triggered()
-{
-    QClipboard *c=QApplication::clipboard();
-    QString s =c->text();
-    QString t=s;
-    int cx=0;
-    for(uint i=0; i<s.size(); i++) {
-        if(i!=0&&s[i].isUpper()) {
-            t.insert(i+cx,'_');
-            cx++;
-        }
-    }
-    c->setText(t.toUpper());
-}
-
-
-void MainWindow::on_actionProofreadingBeiJingTime_triggered()
-{
-    ProofreadingBeijingTime();
-}
-
 void MainWindow::on_actionOpenApplicationPath_triggered()
 {
     QProcess p;
     QDesktopServices::openUrl(QUrl(QCoreApplication::applicationDirPath()));
 
 }
-
+void MainWindow::on_actionProofreadingBeiJingTime_triggered()
+{
+    ProofreadingBeijingTime();
+}
 void MainWindow::on_actionSave_triggered()
 {
     QString str=ui->plainTextEdit->toPlainText();
@@ -194,4 +152,65 @@ void MainWindow::on_actionSave_triggered()
     qlonglong r= currentDatabase->insert(title,str);
 
     qDebug()<<r<<" ";
+}
+void MainWindow::on_actionSort_triggered()
+{
+    QClipboard *c = QApplication::clipboard();
+
+    QString str= c->text();
+
+    str= SortLines(str);
+    c->setText(str);
+}
+void MainWindow::on_comboBox_currentIndexChanged(const QString &arg)
+{
+    qDebug()<<arg;
+}
+void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
+{
+    qlonglong id=item->data(Qt::UserRole).toLongLong();
+    currentId=id;
+    QPair<QString,QString> r=currentDatabase->Query(id);
+    this->setWindowTitle(r.first);
+
+    ui->plainTextEdit->clear();
+    ui->plainTextEdit->appendPlainText(r.second);
+}
+void MainWindow::on_plainTextEdit_textChanged()
+{
+    isChanged=true;
+    if(!this->windowTitle().endsWith('*'))
+        this->setWindowTitle(this->windowTitle()+" *");
+}
+void MainWindow::refreshDatabaseNames(){
+    ui->comboBox->clear();
+    QString dirStr= GetApplicationPath("datas");
+    QDir dir(dirStr);
+    QStringList allFiles = dir.entryList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst);//(QDir::Filter::Files,QDir::SortFlag::NoSort)
+    ui->comboBox->addItems(allFiles);
+}
+void MainWindow::refreshList(){
+    QList<QPair<qlonglong,QString> > ls=currentDatabase->ListNotes();
+    ui->listWidget->clear();
+    for(int i=0; i<ls.size(); i++) {
+        QListWidgetItem *lwi=new QListWidgetItem();
+
+
+        lwi->setData(Qt::UserRole,ls.at(i).first);
+        lwi->setText(ls.at(i).second);
+        ui->listWidget->addItem(lwi);
+    }
+
+}
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::on_actionDelete_triggered()
+{
+    qlonglong id=ui->listWidget->currentItem()->data(Qt::UserRole).toLongLong();
+
+    currentDatabase->DeleteNote(id);
+    refreshList();
 }

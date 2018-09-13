@@ -70,7 +70,55 @@ qlonglong Database::insert(QString &title,QString &content){
     return r;
 
 }
+QList<QPair<qlonglong,QString> > Database::ListNotes(){
+    QList<QPair<qlonglong,QString> > ls;
+    if(!this->open()) return ls;
+    if(!this->transaction()) {
+        this->close();
+        return ls;
+    }
+    QSqlQuery q;
+    q.prepare("SELECT Id,Title FROM Article");
+    q.exec();
 
+    while (q.next()) {
+        QPair<qlonglong,QString> p{q.value(0).toLongLong(),q.value(1).toString()};
+        ls.append(p);
+    }
+    this->close();
+    return ls;
+}
+bool Database::DeleteNote(qlonglong id){
+    bool r=false;;
+    if(!this->open()) return r;
+    if(!this->transaction()) {
+        this->close();
+        return r;
+    }
+    QSqlQuery q;
+    q.prepare("DELETE FROM Article WHERE Id=:id");
+    q.bindValue(":id",id);
+    q.exec();
+    r=commit();
+    this->close();
+    return r;
+}
+QPair<QString,QString> Database::Query(qlonglong id){
+    QPair<QString,QString> r;
+    if(!this->open()) return r;
+
+    QSqlQuery q;
+    q.prepare("SELECT Title,Content FROM Article WHERE Id=:id");
+    q.bindValue(":id",id);
+    q.exec();
+
+    if (q.next()) {
+        r.first=q.value(0).toString();
+        r.second=q.value(1).toString();
+    }
+    this->close();
+    return r;
+}
 bool Database::open(){
     return m_db.open();
 }

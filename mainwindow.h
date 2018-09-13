@@ -57,13 +57,20 @@ void on_actionOpenApplicationPath_triggered();
 
 void on_actionSave_triggered();
 
+void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
+
+void on_actionDelete_triggered();
+
 private:
 bool isChanged;
 Ui::MainWindow *ui;
 Database *currentDatabase;
+qlonglong currentId;
+
 int lastId;
 void refreshDatabaseNames();
 void initialize();
+void refreshList();
 };
 
 #endif // MAINWINDOW_H
