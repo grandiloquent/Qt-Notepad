@@ -65,12 +65,14 @@ private:
 bool isChanged;
 Ui::MainWindow *ui;
 Database *currentDatabase=nullptr;
-qlonglong currentId;
+qlonglong currentId=0;
 
 
 void refreshDatabaseNames();
 void initialize();
 void refreshList();
+void reset();
+
 };
 
 #endif // MAINWINDOW_H

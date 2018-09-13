@@ -166,6 +166,7 @@ void MainWindow::on_actionSort_triggered()
 }
 void MainWindow::on_comboBox_currentIndexChanged(const QString &arg)
 {
+    reset();
     if(currentDatabase!=nullptr) {
         currentDatabase->close();
     }
@@ -212,7 +213,12 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+void MainWindow::reset(){
+    currentId=0;
+    this->setWindowTitle("Notepad");
+    this->ui->plainTextEdit->clear();
 
+}
 void MainWindow::on_actionDelete_triggered()
 {
     qlonglong id=ui->listWidget->currentItem()->data(Qt::UserRole).toLongLong();
