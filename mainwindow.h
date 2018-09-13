@@ -64,10 +64,10 @@ void on_actionDelete_triggered();
 private:
 bool isChanged;
 Ui::MainWindow *ui;
-Database *currentDatabase;
+Database *currentDatabase=nullptr;
 qlonglong currentId;
 
-int lastId;
+
 void refreshDatabaseNames();
 void initialize();
 void refreshList();

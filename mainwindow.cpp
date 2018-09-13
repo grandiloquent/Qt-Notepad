@@ -3,16 +3,12 @@
 
 
 void MainWindow::initialize(){
-    if(ui->comboBox->itemText(0).isNull()) {
-        currentDatabase=new Database("db.dat");
-    }else{
-        currentDatabase=new Database(ui->comboBox->itemText(0));
-    }
+
     this->refreshDatabaseNames();
 
     QFont f("Consolas",12);
     this->ui->plainTextEdit->setFont(f);
-    refreshList();
+
 }
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -149,9 +145,15 @@ void MainWindow::on_actionSave_triggered()
 
     QString title=pos>-1 ? str.trimmed().left(pos) : str;
 
-    qlonglong r= currentDatabase->insert(title,str);
-
-    qDebug()<<r<<" ";
+    if(currentId==0) {
+        qlonglong r= currentDatabase->insert(title,str);
+        currentId=r;
+    }
+    else{
+        currentDatabase->UpdateNote(currentId,title,str);
+    }
+    this->setWindowTitle(title);
+    refreshList();
 }
 void MainWindow::on_actionSort_triggered()
 {
@@ -164,7 +166,11 @@ void MainWindow::on_actionSort_triggered()
 }
 void MainWindow::on_comboBox_currentIndexChanged(const QString &arg)
 {
-    qDebug()<<arg;
+    if(currentDatabase!=nullptr) {
+        currentDatabase->close();
+    }
+    currentDatabase=new Database(ui->comboBox->currentText());
+    refreshList();
 }
 void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {

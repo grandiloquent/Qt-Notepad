@@ -32,8 +32,13 @@ bool Database::createStructure(){
     return c;
 }
 Database::Database(QString fileName){
-    m_db=QSqlDatabase::addDatabase("QSQLITE");
-    m_db.setHostName("localhost");
+
+    if(QSqlDatabase::contains("GBond"))
+        m_db = QSqlDatabase::database("GBond");
+    else
+        m_db = QSqlDatabase::addDatabase("QSQLITE", "GBond");
+    //m_db=QSqlDatabase::addDatabase("QSQLITE");
+    //m_db.setHostName("localhost");
     QString f("datas");
     QString dir=GetApplicationPath(f);
 
@@ -56,7 +61,7 @@ qlonglong Database::insert(QString &title,QString &content){
         this->close();
         return -1;
     }
-    QSqlQuery q;
+    QSqlQuery q(m_db);
     q.prepare("INSERT INTO Article (Title, Content, CreateAt,UpdateAt) "
               "VALUES (:title, :content, :createAt, :updateAt)");
     q.bindValue(":title",title);
@@ -70,15 +75,31 @@ qlonglong Database::insert(QString &title,QString &content){
     return r;
 
 }
+bool Database::UpdateNote(qlonglong id,QString title,QString content){
+    if(!this->open()) return false;
+    if(!this->transaction()) {
+        this->close();
+        return false;
+    }
+    QSqlQuery q(m_db);
+    q.prepare("UPDATE Article SET Title=:title, Content=:content,UpdateAt=:updateAt WHERE Id = :id");
+
+    q.bindValue(":id",id);
+    q.bindValue(":title",title);
+    q.bindValue(":content",content);
+    q.bindValue(":updateAt",QDateTime::currentSecsSinceEpoch());
+    q.executedQuery();
+    bool c=this->commit();
+
+    this->close();
+    return c;
+}
 QList<QPair<qlonglong,QString> > Database::ListNotes(){
     QList<QPair<qlonglong,QString> > ls;
     if(!this->open()) return ls;
-    if(!this->transaction()) {
-        this->close();
-        return ls;
-    }
-    QSqlQuery q;
-    q.prepare("SELECT Id,Title FROM Article");
+
+    QSqlQuery q("SELECT Id,Title FROM Article",m_db);
+
     q.exec();
 
     while (q.next()) {
@@ -97,6 +118,7 @@ bool Database::DeleteNote(qlonglong id){
     }
     QSqlQuery q;
     q.prepare("DELETE FROM Article WHERE Id=:id");
+
     q.bindValue(":id",id);
     q.exec();
     r=commit();
@@ -107,8 +129,10 @@ QPair<QString,QString> Database::Query(qlonglong id){
     QPair<QString,QString> r;
     if(!this->open()) return r;
 
-    QSqlQuery q;
+    QSqlQuery q(m_db);
+
     q.prepare("SELECT Title,Content FROM Article WHERE Id=:id");
+
     q.bindValue(":id",id);
     q.exec();
 
@@ -130,5 +154,6 @@ bool Database::transaction(){
     return m_db.transaction();
 }
 Database::~Database(){
+    m_db.close();
 
 }
