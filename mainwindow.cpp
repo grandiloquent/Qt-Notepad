@@ -143,8 +143,14 @@ void MainWindow::on_actionSave_triggered()
     QString str=ui->plainTextEdit->toPlainText();
     int pos= str.trimmed().indexOf('\n');
 
-    QString title=pos>-1 ? str.trimmed().left(pos) : str;
+    QString title=pos>-1 ? str.trimmed().left(pos).trimmed() : str;
 
+    if(title.startsWith(QChar('#'))) {
+        int pos=title.indexOf(' ');
+        if(pos>-1) {
+            title=title.right(title.size()-pos).trimmed();
+        }
+    }
     if(currentId==0) {
         qlonglong r= currentDatabase->insert(title,str);
         currentId=r;

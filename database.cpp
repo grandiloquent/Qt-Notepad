@@ -88,7 +88,7 @@ bool Database::UpdateNote(qlonglong id,QString title,QString content){
     q.bindValue(":title",title);
     q.bindValue(":content",content);
     q.bindValue(":updateAt",QDateTime::currentSecsSinceEpoch());
-    q.executedQuery();
+    q.exec();
     bool c=this->commit();
 
     this->close();
