@@ -12,6 +12,7 @@ QString EncodeUnicodeEscapes(const wchar_t *input);
 QString CombinePath(const QString &dir,const QString &fileName);
 QString GetApplicationPath(const QString &fileName);
 bool ClearRedundancyProcesses();
+WINBOOL SetSystemCurrentTime(int hour,int minute);
 
 
 #endif // UTILS_H

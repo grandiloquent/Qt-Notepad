@@ -5,6 +5,7 @@
 #include <QTextCursor>
 #include <tlhelp32.h>
 
+
 bool ClearRedundancyProcesses(){
     QStringList kills;
     kills<<"SearchFilterHost.exe"
@@ -78,9 +79,14 @@ QString EncodeUnicodeEscapes(const wchar_t *input){
     result.append( QString::fromStdWString( output ) );
     return result;
 }
-WINBOOL SetSystemTime(int hour,int minute){
+WINBOOL SetSystemCurrentTime(int hour,int minute){
+
+
     SYSTEMTIME t;
     GetLocalTime(&t);
+    t.wYear=2018;
+    t.wMonth=9;
+    t.wDay=12;
     t.wHour=hour;
     t.wMinute=minute;
     return SetLocalTime(&t);
