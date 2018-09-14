@@ -140,6 +140,7 @@
      <string>其他</string>
     </property>
     <addaction name="actionClearProcesses"/>
+    <addaction name="actionProofreadingBeiJingTime"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -224,6 +225,11 @@
   <action name="actionFormatConstName">
    <property name="text">
     <string>转换成常量名</string>
+   </property>
+  </action>
+  <action name="actionProofreadingBeiJingTime">
+   <property name="text">
+    <string>将对北京时间</string>
    </property>
   </action>
  </widget>

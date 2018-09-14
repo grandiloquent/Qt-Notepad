@@ -143,26 +143,11 @@ void MainWindow::on_plainTextEdit_textChanged()
 
 void MainWindow::on_actionClearProcesses_triggered()
 {
-    QNetworkAccessManager* manager=new QNetworkAccessManager();
-    QObject::connect(manager,&QNetworkAccessManager::finished,this,[=](QNetworkReply *reply){
-        if(reply->error()) {
-                qDebug()<<reply->errorString();
-                return;
-        }
-        QString res=reply->readAll();
-        uint v=res.left(10).toLong();
 
-        QDateTime time;
-        time.setTime_t(v);
-        qDebug()<<res <<" 123"<<v<<" "<<time.toString(Qt::SystemLocaleShortDate);
-    });
-    QNetworkRequest request;
-    request.setUrl(QUrl("https://bjtime.cn/nt.asp"));
-    manager->get(request);
 
-    // ClearRedundancyProcesses();
-//    int r= SetSystemCurrentTime(1,38);
-//    qDebug()<<r;
+    ClearRedundancyProcesses();
+    int r= SetSystemCurrentTime(1,38);
+    qDebug()<<r;
 }
 
 void MainWindow::on_actionFormatConstName_triggered()
@@ -180,3 +165,25 @@ void MainWindow::on_actionFormatConstName_triggered()
     c->setText(t.toUpper());
 }
 
+
+void MainWindow::on_actionProofreadingBeiJingTime_triggered()
+{
+    QNetworkAccessManager* manager=new QNetworkAccessManager();
+    QObject::connect(manager,&QNetworkAccessManager::finished,this,[=](QNetworkReply *reply){
+        if(reply->error()) {
+                qDebug()<<reply->errorString();
+                return;
+        }
+        QString res=reply->readAll();
+        uint v=res.left(10).toLong();
+
+        QDateTime time;
+
+        time.setTime_t(v);
+
+        SetSystemCurrentTime(time.date().year(),time.date().month(),time.date().day(),time.time().hour(),time.time().minute(),time.time().second());
+    });
+    QNetworkRequest request;
+    request.setUrl(QUrl("https://bjtime.cn/nt.asp"));
+    manager->get(request);
+}

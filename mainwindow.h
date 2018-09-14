@@ -44,6 +44,8 @@ void on_actionClearProcesses_triggered();
 
 void on_actionFormatConstName_triggered();
 
+void on_actionProofreadingBeiJingTime_triggered();
+
 private:
 bool isChanged;
 Ui::MainWindow *ui;
