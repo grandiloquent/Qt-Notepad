@@ -4,7 +4,13 @@
 #include <QCoreApplication>
 #include <QTextCursor>
 #include <tlhelp32.h>
+#include <QApplication>
+#include <QClipboard>
 
+void OnClipboardString(OnClipboardStringCallback *callback){
+
+
+}
 
 bool ClearRedundancyProcesses(){
     QStringList kills;

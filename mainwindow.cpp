@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->plainTextEdit->addAction(ui->actionCopy);
+    ui->plainTextEdit->addAction(ui->actionPasteCode);
     ui->listWidget->addAction(ui->actionDelete);
 
     // Database::instance();
@@ -231,4 +232,21 @@ void MainWindow::on_actionDelete_triggered()
 
     currentDatabase->DeleteNote(id);
     refreshList();
+}
+
+void MainWindow::on_actionNew_triggered()
+{
+    reset();
+}
+
+void MainWindow::on_actionPasteCode_triggered()
+{
+    QClipboard *c = QApplication::clipboard();
+
+    QString str= c->text().trimmed();
+    if(str.size()>0) {
+        ui->plainTextEdit->textCursor().insertText(QString("%1%2%3").arg("\n```\n").arg(str.replace('`','\u0060')).arg("\n```\n"));
+    }
+
+
 }

@@ -1,6 +1,13 @@
 #include "win.h"
 
+void WalkProcessTree(){
+    DWORD pid=0;
+    // https://docs.microsoft.com/en-us/windows/desktop/api/processthreadsapi/nf-processthreadsapi-openprocess
+    HANDLE hProcess=OpenProcess(SYNCHRONIZE|PROCESS_QUERY_INFORMATION|PROCESS_VM_READ|PROCESS_TERMINATE,false,pid);
+    if(hProcess) {
 
+    }
+}
 WINBOOL SetSystemCurrentTime(int year,int month,int day,int hour,int minute,int second){
 
 

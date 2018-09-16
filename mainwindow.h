@@ -16,6 +16,7 @@
 #include <QTextBlock>
 
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -60,6 +61,10 @@ void on_actionSave_triggered();
 void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 
 void on_actionDelete_triggered();
+
+void on_actionNew_triggered();
+
+void on_actionPasteCode_triggered();
 
 private:
 bool isChanged;

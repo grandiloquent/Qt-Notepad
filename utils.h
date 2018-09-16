@@ -6,6 +6,9 @@
 #include <QTextCodec>
 #include <QChar>
 
+typedef QString (*OnClipboardStringCallback)(QString);
+
+void OnClipboardString(OnClipboardStringCallback *callback);
 QString SortMethods(QString &s);
 QString SortLines(QString &s);
 QString EncodeUnicodeEscapes(const wchar_t *input);

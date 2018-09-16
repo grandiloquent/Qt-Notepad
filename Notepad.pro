@@ -4,13 +4,13 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql network
+QT       += core gui sql network xmlpatterns
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Notepad
 TEMPLATE = app
-
+CONFIG += c++1z
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -29,14 +29,16 @@ SOURCES += \
     utils.cpp \
     database.cpp \
     file.cpp \
-    win.cpp
+    win.cpp \
+    htm.cpp
 
 HEADERS += \
         mainwindow.h \
     database.h \
     utils.h \
     file.h \
-    win.h
+    win.h \
+    htm.h
 
 FORMS += \
         mainwindow.ui
